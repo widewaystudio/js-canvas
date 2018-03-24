@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>刮刮乐- canvas-最新的测试版本</title><style type="text/css">
+		.wrapper{
+			width:306px;
+			height:439px;
+			border:1px solid #eee;
+			background-image:url('./image/2.jpg');
+			position:absolute;
+
+		}
+		canvas{
+			height:155px;
+			width:278px;
+			background-image:url('./image/xx.jpg');
+			display:block;
+			left:15px;
+			top:135px;
+			position:absolute;
+			opacity:0.5;
+			cursor:pointer;
+
+		}
+	</style></head><body><div class="wrapper"><canvas height='155' width='278'></canvas></div><script type="text/javascript">
+		
+	  function init(){
+	  	var oCan = document.getElementsByTagName("canvas")[0],
+	  	    left = oCan.offsetLeft,
+	  	    top = oCan.offsetTop,
+	  	    w = oCan.offsetWidth,
+	  	    h = oCan.offsetHeight,
+	  	    nowX,
+	  	    nowY,
+	  	    lastX,
+	  	    lastY,
+	  	    flg;
+		  var otx = oCan.getContext('2d');
+          otx.fillStyle = "#eee";
+		  otx.fillRect(0,0,278,155);
+		  otx.lineWidth = "20";	
+		  otx.fillStyle ="#fff";
+		  otx.globalCompositeOperation = "destination-out"		 	  
+          oCan.addEventListener('mousedown',startFunc,false);
+         function startFunc(e){
+         	       lastX = e.clientX - left - 5;
+				   lastY = e.clientY - top - 5;
+			  	   oCan.addEventListener('mousemove',drawFunc,false);
+				  document.addEventListener('mouseup',cancelFunc,false);
+				  
+			  }
+		function drawFunc(e){       
+			    nowX = e.clientX - left - 5,
+			    nowY = e.clientY - top - 5;
+			   otx.beginPath();	
+			   otx.arc(nowX,nowY,10,0, Math.PI*2, 0);
+			   otx.closePath();
+			   otx.fill();			   
+			   otx.beginPath();	
+			   otx.lineCap = 'round';		   		  
+			   otx.moveTo(lastX,lastY);
+			   otx.lineTo(nowX,nowY);
+			   otx.stroke();
+               lastX = nowX;
+               lastY = nowY;
+			}
+		function cancelFunc(e){
+			oCan.removeEventListener('mousemove',drawFunc,false);
+			document.removeEventListener('mouseup',cancelFunc,false);
+			clearFunc();
+		}
+		function clearFunc(e){
+            var d = otx.getImageData(0,0,w,h),
+                c = 0,
+                len = d.data.length;
+                for(var i = 1; i < len; i += 4){
+                	if(d.data[i] !== 0){
+                		c ++;
+                	}
+                }
+                if(c < len / 4 * 0.4){
+                	otx.clearRect(0,0,w,h);
+                }
+
+		}
+	  }
+
+   init();
+	</script></body></html>
